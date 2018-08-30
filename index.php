@@ -1,13 +1,16 @@
 <?php
 //必填参数
-$table_name = "bc_app_merchant_use_template_logs";
-$schema = "business_center";
+/*$schema = "member_center";
+$table_name = "uc_merchant_student";*/
+$schema = "edubase";
+$table_name = "mc_baonahao_index_carousels";
 $author = "xuxiongzi";
-$port = "3311";
+$port = "3306";
 $prefix = strstr($schema,"_",true);
 $servername = "192.168.1.177";
-$username = "api2business";
-$password = "YP3vskg5pZYScpJkpWtk6YuncFSXf66Y";
+$username = "apiapphome";
+//$password = "s3enrIV5dax9p3ior6WwrLSTeni8YWOIiNGzdLSSmrqZfNRqtr2wsch3yqSLfKR8kbirocbOytW1tYFuGPHXCdIQg8YCmptn7cpIRWjKN0Fp4Qxm";
+$password = "ce5cDh4d6Hvcu5NrRCZ6Wdm70gT2AXPA";
 
 //创建连接
 $conn = new mysqli($servername,$username,$password,$schema,$port);
@@ -112,7 +115,7 @@ foreach ($param as $k=>$v) {
 }
 $tmpstr .="\";";
 $tmpstr .= "
-        $"."from = \" from `$schema`.$table_name a \";
+        $"."from = \" from {\$this->getSource()} a \";
         ";
 $tmpstr .= "
         $"."where = \" where true \";
@@ -191,7 +194,7 @@ $tmpstr .= "
         \$param['id'] = \$id; ";
     foreach ($update_param as $k=>$v) {
         $tmpstr .= "
-        if(isset(\$data['$k'])) \$param['$k'] = getarrval(\$data,'$k');
+        if(isset(\$data['$k'])) \$param['$k'] = getArrVal(\$data,'$k');
     ";
 
     }
