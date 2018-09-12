@@ -7,10 +7,9 @@ $table_name = "mc_baonahao_index_carousels";
 $author = "xuxiongzi";
 $port = "3306";
 $prefix = strstr($schema,"_",true);
-$servername = "192.168.1.177";
-$username = "apiapphome";
-//$password = "s3enrIV5dax9p3ior6WwrLSTeni8YWOIiNGzdLSSmrqZfNRqtr2wsch3yqSLfKR8kbirocbOytW1tYFuGPHXCdIQg8YCmptn7cpIRWjKN0Fp4Qxm";
-$password = "ce5cDh4d6Hvcu5NrRCZ6Wdm70gT2AXPA";
+$servername = "host";
+$username = "yourame user  ";
+$password = "";
 
 //创建连接
 $conn = new mysqli($servername,$username,$password,$schema,$port);
