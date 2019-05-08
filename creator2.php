@@ -1,7 +1,7 @@
 <?php
 //必填参数研发环境
 // $schema = "eduwork";
-// $table_name = "bc_app_int_merchant_parent_records";
+// $table_name = "bc_point_merchant_parent_records";
 // $author = "xuxiongzi";
 // $port = "3306";
 // $prefix = strstr($schema,"_",true);
@@ -10,9 +10,8 @@
 // $password = "zSGzzHMX7p3fJt7AVKCzP9yRwLIIEsFW";
 
 // 未来校长之家
-$table_name = "bc_app_articles";
-
-$schema = "eduwork";
+$schema = "future_headmaster_home";
+$table_name = "fh_articles";
 $author = "xuxiongzi";
 $port = "3306";
 $prefix = strstr($schema,"_",true);
@@ -70,7 +69,7 @@ if ($column_infos->num_rows > 0) {
  * 描述：".$table_comment.
  "
  *
- * @copyright Copyright 2012-2019, BAONAHAO Software Foundation, Inc. ( http://api.baonahao.com/ )
+ * @copyright Copyright 2012-2018, BAONAHAO Software Foundation, Inc. ( http://api.baonahao.com/ )
  * @link http://api.baonahao.com api(tm) Project
  * @date ".date('Y-m-d H:i:s')."
  * @author $author <$author@xiaohe.com>
@@ -83,11 +82,13 @@ class ".$class_name." extends BaseModel
         $"."this->setReadConnectionService('".$prefix."_slave');
         $"."this->setWriteConnectionService('".$prefix."_master');
     }
+
     /**
      * 描述：获取".$table_comment."列表
      * @param
      * @return array
-     * @author xuxiongzi <xuxiongzi@xiaohe.com>
+     * @date ".date('Y-m-d H:i:s')."
+     * @author $author <$author@xiaohe.com>
      */
     ";
 
@@ -101,12 +102,9 @@ foreach ($param as $k=>$v) {$tmpstr .= "        $".$k. " = getArrVal($"."data,".
 ";
 }
 $tmpstr .="
-        $"."order = getArrVal($"."data, 'order', 'a.modified DESC');//排序值
-        $"."curr_page = getArrVal($"."data, 'curr_page', 1);
+        $"."order = getArrVal($"."data, 'order', 'modified DESC');//排序值
+        $"."limit = getArrVal($"."data, 'curr_page', 1);
         $"."page_size = getArrVal($"."data, 'page_size', 10);
-        $"."offset = ($"."curr_page - 1) * $"."page_size;
-        $"."offset = empty($"."offset) ? '' : \" offset \" . $"."offset;
-        $"."limit = \" limit \" . $"."page_size;
 
         //所查字段
         $"."field = \"
@@ -114,7 +112,7 @@ $tmpstr .="
 $end = end($param);
 $endKey = key($param);
 foreach ($param as $k=>$v) {
-    $tmpstr .= "a.".$k;
+    $tmpstr .= $k;
     if($k != $endKey){
         $tmpstr .=",";
     }
@@ -123,95 +121,18 @@ foreach ($param as $k=>$v) {
 }
 $tmpstr .="\";";
 $tmpstr .= "
-        $"."from = \" from {\$this->getSource()} a \";
-        ";
-$tmpstr .= "
-        $"."where = \" where true \";
+        $"."where = \" 1=1 \";
         ";
 foreach($param as $k=>$v) {
     $tmpstr .= "
         if ($".$k.") {
-            $"."where .= \" AND a.".$k." = '{\$".$k."}' \";
+            $"."where .= \" AND ".$k." = '{\$".$k."}' \";
         }
     ";
 }
 $tmpstr .= "
-        if (\$order) {
-            \$order = \" ORDER BY \$order \";
-        }
 
-        \$result = \$this->findPage(\$field, \$from, \$where, \$order, \$limit, \$offset, \$page_size);
-        return \$result;
-    }
-";
-$add_param = $param;
-    unset($add_param['id']);
-    unset($add_param['creator_id']);
-    unset($add_param['created']);
-    unset($add_param['modifier_id']);
-    unset($add_param['modified']);
-
-$tmpstr .= "
-    /**
-     * 描述：add
-     * @param
-     * @return string
-     * @author $author <$author@xiaohe.com>
-     * @throws
-     */
-    public function addModel(\$data){
-
-        // 参数
-        \$param['id']                = getUuid();
-        ";
-foreach ($add_param as $k=>$v) {
-    $tmpstr .= "
-        if(isset(\$data['$k'])) \$param['$k'] = getArrVal(\$data,'$k');
-    ";
-
-}
-$tmpstr .= "
-        if(isset(\$data['operator_id'])) \$param['creator_id'] = \$param['modifier_id'] = getArrVal(\$data,\"operator_id\");
-        \$param['created'] = \$param['modified'] = date('Y-m-d H:i:s');
-
-        \$result = \$this->insert(\$param);
-        if(\$result) return \$param['id'];
-        return \$result;
-    }
-
-";
-
-    $update_param = $param;
-    unset($add_param['creator_id']);
-    unset($add_param['created']);
-    unset($add_param['modifier_id']);
-    unset($add_param['modified']);
-$tmpstr .= "
-    /**
-     * 描述：update
-     * @param
-     * @return boolean
-     * @author $author <$author@xiaohe.com>
-     * @throws
-     */
-    public function updateModel(\$data) {
-
-        // return value
-        \$result = false;
-
-        \$id = getArrVal(\$data,'id');
-        if(empty(\$id)) return \$result;
-        \$param['id'] = \$id; ";
-    foreach ($update_param as $k=>$v) {
-        $tmpstr .= "
-        if(isset(\$data['$k'])) \$param['$k'] = getArrVal(\$data,'$k');
-    ";
-
-    }
-
-$tmpstr .="
-        if(isset(\$data['operator_id'])) \$param['modifier_id'] = getArrVal(\$data,\"operator_id\");
-        \$result = \$this->updateById(\$param);
+        \$result = \$this->findPageList(\$field, \$where, \$order, \$limit, \$page_size);
         return \$result;
     }
 }
@@ -236,18 +157,7 @@ class $controller_name extends AppController
     /**
      * 描述：add $table_comment
      * @param
-        | 字段 | 类型 | 是否必填 | 说明 |
-        | :-- | :-- | :-- | :-- |
-        | `data[operator_id]` | `String` | 是 | 操作人ID | ";
-    foreach ($param as $k => $value) {
-        $controllerStr .="
-        | `data[$k]` | `String` | 否 | $value | ";
-    //  * @param 非必填 string data[$k]  $value ";
-
-    }
-$controllerStr .="
-     * @return string
-     * @date ".date('Y-m-d H:i:s')."
+     * @return array
      * @author xuxiongzi <xuxiongzi@xiaohe.com>
      */
     public function add$baseName() {
@@ -262,9 +172,9 @@ $controllerStr .="
     foreach ($param as $k => $value) {
         $controllerStr .="
             '$k' => array(
-                array('method'=>'isset', 'msg'=>'$k'),
-                array('method'=>'empty', 'msg'=>'$k'),
-                array('method'=>'length', 'msg'=>'$k', 'equ' => 32),
+                array('method'=>'isset', 'msg'=>''),
+                array('method'=>'empty', 'msg'=>''),
+                array('method'=>'length', 'msg'=>'', 'equ' => 32),
             ),";
 
     }
@@ -286,16 +196,7 @@ $controllerStr .="
     /**
      * 描述：更新$table_comment
      * @param
-        | 字段 | 类型 | 是否必填 | 说明 |
-        | :-- | :-- | :-- | :-- |
-        | `data[operator_id]` | `String` | 是 | 操作人ID | ";
- foreach ($param as $k => $value) {
-     $controllerStr .="
-        | `data[$k]` | `String` | 否 | $value | ";
- }
-$controllerStr .="
-     * @return string
-     * @date ".date('Y-m-d H:i:s')."
+     * @return array
      * @author xuxiongzi <xuxiongzi@xiaohe.com>
      */
     public function update$baseName() {
@@ -310,9 +211,9 @@ $controllerStr .="
     foreach ($param as $k => $value) {
         $controllerStr .="
             '$k' => array(
-                array('method'=>'isset', 'msg'=>'$k'),
-                array('method'=>'empty', 'msg'=>'$k'),
-                array('method'=>'length', 'msg'=>'$k', 'equ' => 32),
+                array('method'=>'isset', 'msg'=>''),
+                array('method'=>'empty', 'msg'=>''),
+                array('method'=>'length', 'msg'=>'', 'equ' => 32),
             ),";
 
     }
@@ -334,16 +235,7 @@ $controllerStr .="
     /**
      * 描述：获取$table_comment 列表
      * @param
-        | 字段 | 类型 | 是否必填 | 说明 |
-        | :-- | :-- | :-- | :-- |
-        | `data[operator_id]` | `String` | 是 | 操作人ID | ";
- foreach ($param as $k => $value) {
-     $controllerStr .="
-        | `data[$k]` | `String` | 否 | $value | ";
- }
-$controllerStr .="
-     * @date ".date('Y-m-d H:i:s')."
-     * @return string
+     * @return array
      * @author $author <$author@xiaohe.com>
      */
     public function get".$baseName."List() {
@@ -358,9 +250,9 @@ $controllerStr .="
     foreach ($param as $k => $value) {
         $controllerStr .="
             '$k' => array(
-                array('method'=>'isset', 'msg'=>'$k'),
-                array('method'=>'empty', 'msg'=>'$k'),
-                array('method'=>'length', 'msg'=>'$k', 'equ' => 32),
+                array('method'=>'isset', 'msg'=>''),
+                array('method'=>'empty', 'msg'=>''),
+                array('method'=>'length', 'msg'=>'', 'equ' => 32),
             ),";
 
     }
@@ -399,23 +291,23 @@ class ".$logic_name." extends \\Phalcon\\Mvc\\Controller
     /**
      * 描述：add $table_comment
      * @param
-     * @return boolean
+     * @return array
      * @author xuxiongzi <xuxiongzi@xiaohe.com>
      */
     public function add$baseName(\$data) {
         \$model = new ".$baseName."Model();
-        return \$model->addModel(\$data);
+        return \$model->add(\$data);
     }
 
     /**
      * 描述：update $table_comment
      * @param
-     * @return boolean
+     * @return array
      * @author xuxiongzi <xuxiongzi@xiaohe.com>
      */
     public function update$baseName(\$data) {
         \$model = new ".$baseName."Model();
-        return \$model->updateModel(\$data);
+        return \$model->saveById(\$data);
     }
 
     /**
