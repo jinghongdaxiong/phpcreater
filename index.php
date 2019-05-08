@@ -264,7 +264,6 @@ $controllerStr .="
             '$k' => array(
                 array('method'=>'isset', 'msg'=>'$k'),
                 array('method'=>'empty', 'msg'=>'$k'),
-                array('method'=>'length', 'msg'=>'$k', 'equ' => 32),
             ),";
 
     }
@@ -312,7 +311,6 @@ $controllerStr .="
             '$k' => array(
                 array('method'=>'isset', 'msg'=>'$k'),
                 array('method'=>'empty', 'msg'=>'$k'),
-                array('method'=>'length', 'msg'=>'$k', 'equ' => 32),
             ),";
 
     }
@@ -360,7 +358,6 @@ $controllerStr .="
             '$k' => array(
                 array('method'=>'isset', 'msg'=>'$k'),
                 array('method'=>'empty', 'msg'=>'$k'),
-                array('method'=>'length', 'msg'=>'$k', 'equ' => 32),
             ),";
 
     }
